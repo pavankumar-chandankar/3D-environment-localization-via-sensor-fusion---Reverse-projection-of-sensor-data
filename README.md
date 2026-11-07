@@ -1,21 +1,40 @@
-# 3D Environment Localization via Sensor Fusion
+# RGB-D reverse projection and point-cloud processing — prototype
 
-The 3D Environment Localization via Sensor Fusion project focuses on achieving precise localization in a 3D environment through the integration of sensor data from multiple sources. Leveraging technologies such as Microsoft Kinect RGBD cameras and TurtleBot robots controlled using ROS (Robot Operating System), this project aims to provide accurate localization capabilities for robotic systems navigating within complex environments.
+This repository is a collection of Python experiments for converting depth images to 3D points, creating point clouds from RGB-D data, combining point arrays, and visualizing trajectories. The code uses NumPy, OpenCV, Open3D and Matplotlib.
 
-## Key Features
+**Important distinction:** The current repository does not establish an operational Kinect/IMU Kalman fusion system, ROS nodes, TurtleBot integration, calibrated localization accuracy, or a complete robot navigation pipeline. These were broader project objectives described in the previous README, not demonstrated end-to-end by the checked-in code.
 
-Sensor Fusion: The project employs sensor fusion techniques to integrate data from diverse sensors, including Microsoft Kinect RGBD cameras, inertial sensors, and virtual transmitters. By combining data from multiple sources, the system enhances localization accuracy and robustness.
-Reverse Projection of Sensor Data: A core component of the project involves the reverse projection of sensor data into the 3D environment. This process utilizes ray-tracing techniques to estimate depth information from inertial sensors, enabling the creation of detailed 3D maps of the environment.
-Integration with ROS: The project seamlessly integrates with ROS, a flexible framework for building robotic systems. ROS facilitates communication between different components of the system, enabling efficient data exchange and coordination.
-Simulation Environment: The project utilizes simulation environments such as V-rep and Turtlesim to create virtual representations of real-world scenarios. These simulated environments serve as testing grounds for evaluating localization algorithms and validating system performance.
+## Implemented components
 
-## Getting Started
+- `Reverse_projection.py`: pinhole-camera back-projection from a depth image and an intrinsic matrix `K` to 3D camera coordinates.
+- `Sensor_fusion.py`: Open3D RGB-D image-to-point-cloud conversion with hard-coded example Kinect intrinsics and a demonstration of stacking inertial sample vectors with point coordinates.
+- `Visualize.py`: additional 3D visualization code.
+- `track.py`: Matplotlib plotting helper for point arrays and tracks.
 
-Microsoft Kinect RGBD Camera: The project leverages the depth sensing capabilities of Microsoft Kinect RGBD cameras to capture detailed 3D information about the environment. Depth data obtained from the Kinect camera is processed and integrated into the localization pipeline.
-TurtleBot Robots: TurtleBot robots, controlled using ROS, serve as mobile platforms for localization experiments. Equipped with sensors and actuators, TurtleBot robots navigate within the environment, collecting sensor data for localization purposes.
-Inertial Sensors: Inertial sensors, such as accelerometers and gyroscopes, are utilized to estimate depth information through ray-tracing techniques. By analyzing sensor readings and applying appropriate algorithms, the system derives accurate depth estimates, enhancing localization precision.
-Virtual Transmitters: Sample boundary cells within the simulated environment act as virtual transmitters, emitting signals that aid in localization. By leveraging these virtual transmitters, the system can triangulate its position relative to known reference points, further refining localization accuracy.
+The function `fuse_sensor_data` is a **concatenation demonstration**, not physical sensor fusion or a Kalman filter. The example script uses randomly generated inertial values rather than actual sensor acquisition. Combining arrays this way is not a valid localization estimator.
 
-## Outcome
+## Installing dependencies
 
-The 3D Environment Localization via Sensor Fusion project aims to deliver a robust and efficient localization solution for robotic systems operating in dynamic 3D environments. By harnessing the power of sensor fusion, reverse projection techniques, and ROS integration, the project lays the foundation for enhanced navigation and autonomy in robotic applications.
+Create an isolated Python environment and install the packages used by these scripts:
+
+```bash
+python -m pip install numpy opencv-python open3d matplotlib
+```
+
+Source code examples reference `rgb_image.png` and `depth_image.png`, which are not included. Use compatible test images and calibrate camera intrinsics for your own sensor before evaluating the geometry. Some `__main__` examples are illustrative rather than turnkey: for example, `Reverse_projection.py` references undefined example variables `fx`, `fy`, `cx` and `cy` in its standalone block.
+
+## Minimal mathematical contract
+
+For each pixel `(u,v)` and depth value `z`, reverse projection estimates 3D camera coordinates using
+
+```text
+[X, Y, Z]^T = z * inverse(K) * [u, v, 1]^T
+```
+
+Depth units must match the intended output coordinate system and intrinsic values must be appropriate for the image. The code does not estimate robot pose or quantify localization error.
+
+## CV-supported description
+
+*Implemented Python RGB-D depth back-projection and Open3D point-cloud processing prototypes, with exploratory IMU data handling and 3D visualization.*
+
+This replaces the unsupported description of a verified ROS-integrated RGB-D/IMU localization system.
