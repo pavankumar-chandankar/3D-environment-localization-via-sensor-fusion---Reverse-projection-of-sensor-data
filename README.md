@@ -32,9 +32,3 @@ For each pixel `(u,v)` and depth value `z`, reverse projection estimates 3D came
 ```
 
 Depth units must match the intended output coordinate system and intrinsic values must be appropriate for the image. The code does not estimate robot pose or quantify localization error.
-
-## CV-supported description
-
-*Implemented Python RGB-D depth back-projection and Open3D point-cloud processing prototypes, with exploratory IMU data handling and 3D visualization.*
-
-This replaces the unsupported description of a verified ROS-integrated RGB-D/IMU localization system.
