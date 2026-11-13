@@ -1,0 +1,28 @@
+name: Optional TUM real-recording evaluation
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  tum-fr1-xyz:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install package
+        run: python -m pip install -e .
+      - name: Download official 2012-era Kinect benchmark recording
+        run: python scripts/download_tum.py --sequence freiburg1_xyz --destination data
+      - name: Inspect RGB-D association
+        run: rgbd-lab inspect data/rgbd_dataset_freiburg1_xyz --max-frames 120
+      - name: Run baseline odometry and evaluate against motion capture
+        run: rgbd-lab track data/rgbd_dataset_freiburg1_xyz --max-frames 120 --output results/fr1-xyz-first120
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: fr1-xyz-odometry-evaluation
+          path: results/
+          if-no-files-found: ignore

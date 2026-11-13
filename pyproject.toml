@@ -1,0 +1,29 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "rgbd-lab"
+version = "1.0.0"
+description = "RGB-D visual odometry, reconstruction and TUM benchmark evaluation"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = ["numpy>=1.24,<3", "scipy>=1.10,<2", "opencv-python-headless>=4.8,<5"]
+
+[project.optional-dependencies]
+visualization = ["matplotlib>=3.7,<4"]
+reconstruction = ["open3d>=0.18,<1"]
+dev = ["pytest>=8,<10", "ruff>=0.8,<1", "matplotlib>=3.7,<4"]
+
+[project.scripts]
+rgbd-lab = "rgbd_lab.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-ra"
+
+[tool.ruff]
+line-length = 100
